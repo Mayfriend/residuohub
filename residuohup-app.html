@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>ResíduoHub — Gestão de Resíduos Sustentável</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-blue: #1565C0;
+      --accent-green: #2E7D32;
+      --purple-gamify: #6A1B9A;
+      --bg-neutral: #F0F2F5;
+      --surface-white: #FFFFFF;
+      --text-main: #1F2937;
+      --text-muted: #6B7280;
+      --border-color: #E5E7EB;
+      --error-red: #DC2626;
+      --success-green: #10B981;
+      --safe-area-top: max(0px, env(safe-area-inset-top, 0px));
+      --safe-area-bottom: max(0px, env(safe-area-inset-bottom, 0px));
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--bg-neutral);
+      color: var(--text-main);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      padding-top: var(--safe-area-top);
+      padding-bottom: var(--safe-area-bottom);
+      min-height: 100vh;
+    }
+
+    /* ===== CONTAINERS ===== */
+    .app-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .app-header {
+      padding: 16px 20px;
+      background: var(--surface-white);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .app-header h1 {
+      font-size: clamp(1rem, 4vw, 1.25rem);
+      font-weight: 700;
+      color: var(--primary-blue);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: #E0F2FE;
+      color: var(--primary-blue);
+      white-space: nowrap;
+    }
+
+    .btn-logout {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-weight: 600;
+      padding: 8px;
+    }
+
+    .btn-logout:hover {
+      color: var(--error-red);
+    }
+
+    /* ===== SCREENS ===== */
+    .screen {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      display: none;
+      width: 100%;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ===== AUTH SCREENS ===== */
+    .auth-container {
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .auth-box {
+      background: var(--surface-white);
+      border-radius: 20px;
+      padding: clamp(20px, 5vw, 40px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .auth-box h2 {
+      font-size: clamp(1.5rem, 5vw, 1.875rem);
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .auth-box p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+    }
+
+    .form-group input.error {
+      border-color: var(--error-red);
+    }
+
+    .error-msg {
+      font-size: 0.75rem;
+      color: var(--error-red);
+      margin-top: 4px;
+      display: none;
+    }
+
+    .error-msg.show {
+      display: block;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--primary-blue);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 20px;
+    }
+
+    .btn-primary:hover {
+      background: #1043A0;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .auth-link {
+      text-align: center;
+      font-size: 0.85rem;
+      margin-top: 16px;
+      color: var(--text-muted);
+    }
+
+    .auth-link a {
+      color: var(--primary-blue);
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .auth-link a:hover {
+      text-decoration: underline;
+    }
+
+    .success-message {
+      background: #DCFCE7;
+      color: var(--accent-green);
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    /* ===== APP CONTENT ===== */
+    .app-content {
+      flex: 1;
+      padding: 16px 20px 80px 20px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    @media (min-width: 768px) {
+      .app-content {
+        max-width: 900px;
+        margin: 0 auto;
+        width: 100%;
+      }
+    }
+
+    /* HOME SCREEN */
+    .balance-card {
+      background: linear-gradient(135deg, var(--primary-blue), #1E40AF);
+      border-radius: 16px;
+      padding: clamp(16px, 4vw, 24px);
+      color: white;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 15px -3px rgba(21, 101, 192, 0.3);
+    }
+
+    .balance-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: clamp(0.75rem, 2vw, 0.85rem);
+      opacity: 0.9;
+      margin-bottom: 12px;
+    }
+
+    .balance-number {
+      font-size: clamp(2rem, 8vw, 2.5rem);
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .balance-number span {
+      font-size: 0.5em;
+      font-weight: 600;
+    }
+
+    .balance-footer {
+      font-size: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 8px 12px;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+
+    .btn-main-action {
+      width: 100%;
+      background: var(--accent-green);
+      color: white;
+      border: none;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: clamp(0.95rem, 3vw, 1.05rem);
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 6px -1px rgba(46, 125, 50, 0.3);
+      margin-bottom: 24px;
+      transition: all 0.2s;
+    }
+
+    .btn-main-action:hover {
+      background: #1D6B2B;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px -1px rgba(46, 125, 50, 0.4);
+    }
+
+    .btn-main-action:active {
+      transform: scale(0.96);
+    }
+
+    .section-title {
+      font-size: clamp(0.85rem, 3vw, 0.95rem);
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-title a {
+      color: var(--primary-blue);
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9em;
+    }
+
+    .pev-card {
+      background: var(--surface-white);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      transition: all 0.2s;
+    }
+
+    .pev-card:hover {
+      border-color: var(--primary-blue);
+      box-shadow: 0 2px 8px -1px rgba(21, 101, 192, 0.15);
+    }
+
+    .pev-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 10px;
+      background: #F3E8FF;
+      color: var(--purple-gamify);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .pev-info h4 {
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .pev-info p {
+      font-size: clamp(0.7rem, 2vw, 0.8rem);
+      color: var(--text-muted);
+    }
+
+    /* VALIDATION SCREEN */
+    .camera-box {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      max-height: 300px;
+      background: #1F2937;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 16px;
+      border: 2px dashed #9CA3AF;
+    }
+
+    .camera-overlay-line {
+      width: 80%;
+      height: 2px;
+      background: var(--accent-green);
+      position: absolute;
+      animation: scan 2s infinite ease-in-out;
+    }
+
+    @keyframes scan {
+      0% { top: 20%; }
+      50% { top: 80%; }
+      100% { top: 20%; }
+    }
+
+    .camera-hint {
+      font-size: clamp(0.75rem, 2vw, 0.85rem);
+      color: #D1D5DB;
+      margin-top: 10px;
+      text-align: center;
+      padding: 0 10px;
+    }
+
+    .field-group select,
+    .field-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .field-group select:focus,
+    .field-group input:focus {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+    }
+
+    .photo-preview {
+      width: 100%;
+      padding: 16px;
+      border-radius: 10px;
+      background: #F3F4F6;
+      border: 2px dashed var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      color: var(--text-muted);
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: all 0.2s;
+      min-height: 70px;
+    }
+
+    .photo-preview:hover {
+      border-color: var(--primary-blue);
+      background: #F0F9FF;
+    }
+
+    .photo-preview.captured {
+      background: #ECFDF5;
+      border-color: var(--success-green);
+      color: var(--accent-green);
+    }
+
+    /* SUCCESS SCREEN */
+    .success-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: clamp(20px, 5vw, 40px) 16px;
+    }
+
+    .success-badge {
+      width: clamp(70px, 20vw, 100px);
+      aspect-ratio: 1;
+      background: #DCFCE7;
+      color: var(--accent-green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(2rem, 8vw, 3.5rem);
+      margin-bottom: 16px;
+      animation: scaleIn 0.4s ease-out;
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .success-wrap h2 {
+      font-size: clamp(1.25rem, 5vw, 1.5rem);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .success-wrap > p {
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .success-points {
+      font-size: clamp(1.75rem, 8vw, 2.5rem);
+      font-weight: 800;
+      color: var(--purple-gamify);
+      margin: 16px 0 4px 0;
+    }
+
+    .edu-card {
+      background: #F9FAFB;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: clamp(14px, 3vw, 18px);
+      margin: 24px 0;
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      color: var(--text-muted);
+      line-height: 1.5;
+      text-align: left;
+    }
+
+    .edu-card strong {
+      color: var(--accent-green);
+    }
+
+    .btn-secondary {
+      width: 100%;
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary-blue);
+      background: #F0F9FF;
+      color: var(--primary-blue);
+    }
+
+    /* REWARDS SCREEN */
+    .reward-item {
+      background: var(--surface-white);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: clamp(12px, 3vw, 16px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      transition: all 0.2s;
+    }
+
+    .reward-item:hover {
+      border-color: var(--primary-blue);
+      box-shadow: 0 2px 8px -1px rgba(21, 101, 192, 0.15);
+    }
+
+    .reward-meta h4 {
+      font-size: clamp(0.85rem, 2vw, 0.95rem);
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .reward-meta span {
+      font-size: clamp(0.75rem, 2vw, 0.85rem);
+      font-weight: 700;
+      color: var(--purple-gamify);
+    }
+
+    .btn-claim {
+      background: #E0E7FF;
+      color: #3730A3;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .btn-claim:hover {
+      background: #C7D2FE;
+      transform: translateY(-1px);
+    }
+
+    .btn-claim:disabled {
+      background: #E5E7EB;
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    /* DISCARD HISTORY */
+    .discard-item {
+      background: var(--surface-white);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: clamp(12px, 3vw, 16px);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      transition: all 0.2s;
+    }
+
+    .discard-item:hover {
+      border-color: var(--primary-blue);
+      box-shadow: 0 2px 8px -1px rgba(21, 101, 192, 0.15);
+    }
+
+    .discard-info h4 {
+      font-size: clamp(0.85rem, 2vw, 0.95rem);
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .discard-info p {
+      font-size: clamp(0.75rem, 2vw, 0.85rem);
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .discard-date {
+      font-size: 0.75rem;
+      color: #9CA3AF;
+      margin-top: 6px;
+    }
+
+    .discard-points {
+      font-size: clamp(1.1rem, 3vw, 1.3rem);
+      font-weight: 800;
+      color: var(--purple-gamify);
+      text-align: right;
+    }
+
+    .discard-points small {
+      font-size: 0.6em;
+      font-weight: 600;
+      display: block;
+      color: var(--text-muted);
+    }
+
+    /* TAB BAR */
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: clamp(60px, 15vh, 80px);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: var(--surface-white);
+      padding-bottom: var(--safe-area-bottom);
+      z-index: 100;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: clamp(0.65rem, 1.5vw, 0.8rem);
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 8px;
+      transition: color 0.2s;
+      flex: 1;
+      height: 100%;
+      justify-content: center;
+    }
+
+    .tab-btn.active {
+      color: var(--primary-blue);
+      font-weight: 700;
+    }
+
+    .tab-btn span:first-child {
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+    }
+
+    /* RESPONSIVE ADJUSTMENTS */
+    @media (max-width: 480px) {
+      .app-header {
+        padding: 12px 16px;
+      }
+
+      .app-content {
+        padding: 12px 16px 80px 16px;
+      }
+
+      .auth-container {
+        padding: 16px;
+      }
+
+      .auth-box {
+        padding: 24px 16px;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .app-header {
+        position: relative;
+      }
+
+      .app-content {
+        padding: 24px 20px;
+      }
+
+      .balance-card {
+        padding: 32px;
+      }
+
+      .app-content {
+        padding-bottom: 20px;
+      }
+    }
+
+    /* UTILITIES */
+    .hidden {
+      display: none !important;
+    }
+
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- AUTH: LOGIN -->
+  <div class="screen active" id="screenLogin">
+    <div class="auth-container">
+      <div class="auth-box">
+        <h2>♻️ ResíduoHub</h2>
+        <p>Gestão de Resíduos Sustentável</p>
+
+        <div class="success-message" id="loginSuccessMsg"></div>
+        <div class="error-msg" id="loginErrorMsg"></div>
+
+        <form onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label>Matrícula</label>
+            <input type="text" id="loginMatricula" placeholder="Ex: 20231234" required />
+            <div class="error-msg" id="loginMatriculaError"></div>
+          </div>
+
+          <div class="form-group">
+            <label>Senha</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" required />
+            <div class="error-msg" id="loginPasswordError"></div>
+          </div>
+
+          <button type="submit" class="btn-primary">Entrar</button>
+        </form>
+
+        <div class="auth-link">
+          Não tem conta? <a onclick="goToScreen('screenSignup')">Cadastre-se aqui</a>
+        </div>
+
+        <div class="auth-link">
+          <a onclick="goToScreen('screenRecover')">Esqueceu a senha?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTH: SIGNUP -->
+  <div class="screen" id="screenSignup">
+    <div class="auth-container">
+      <div class="auth-box">
+        <h2>Criar Conta</h2>
+        <p>Junte-se ao ResíduoHub</p>
+
+        <div class="error-msg" id="signupErrorMsg"></div>
+
+        <form onsubmit="handleSignup(event)">
+          <div class="form-group">
+            <label>Nome Completo</label>
+            <input type="text" id="signupNome" placeholder="Seu nome completo" required />
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="signupEmail" placeholder="seu.email@fametro.edu.br" required />
+          </div>
+
+          <div class="form-group">
+            <label>Matrícula</label>
+            <input type="text" id="signupMatricula" placeholder="Ex: 20231234" required />
+          </div>
+
+          <div class="form-group">
+            <label>Senha</label>
+            <input type="password" id="signupPassword" placeholder="Mínimo 6 caracteres" required />
+          </div>
+
+          <div class="form-group">
+            <label>Confirmar Senha</label>
+            <input type="password" id="signupPasswordConfirm" placeholder="Confirme sua senha" required />
+          </div>
+
+          <button type="submit" class="btn-primary">Cadastrar</button>
+        </form>
+
+        <div class="auth-link">
+          Já tem conta? <a onclick="goToScreen('screenLogin')">Faça login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTH: RECOVER PASSWORD -->
+  <div class="screen" id="screenRecover">
+    <div class="auth-container">
+      <div class="auth-box">
+        <h2>Recuperar Senha</h2>
+        <p>Digite seu email para redefinir sua senha</p>
+
+        <div class="success-message" id="recoverSuccessMsg"></div>
+        <div class="error-msg" id="recoverErrorMsg"></div>
+
+        <form onsubmit="handleRecover(event)">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="recoverEmail" placeholder="seu.email@fametro.edu.br" required />
+          </div>
+
+          <button type="submit" class="btn-primary">Enviar Link de Recuperação</button>
+        </form>
+
+        <div class="auth-link">
+          <a onclick="goToScreen('screenLogin')">Voltar ao login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP AUTHENTICATED -->
+  <div class="app-container hidden" id="appContainer">
+    <header class="app-header">
+      <h1>♻️ ResíduoHub</h1>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span class="user-pill" id="userPill"></span>
+        <button class="btn-logout" onclick="handleLogout()">Sair</button>
+      </div>
+    </header>
+
+    <!-- HOME SCREEN -->
+    <div class="screen active" id="screenHome">
+      <div class="app-content">
+        <div class="balance-card">
+          <div class="balance-header">
+            <span>Meus EcoPontos</span>
+            <span id="userRanking">🏆 5º Lugar</span>
+          </div>
+          <div class="balance-number" id="userPoints">340 <span>pts</span></div>
+          <div class="balance-footer">
+            <span id="campusName">Campus CEUNI FAMETRO</span>
+            <span id="discardCount">8 descartes validados</span>
+          </div>
+        </div>
+
+        <button class="btn-main-action" onclick="goToScreen('screenValidate')">
+          📸 Descartar e Ganhar Pontos
+        </button>
+
+        <div class="section-title">
+          <span>Lixeiras PEV no Campus</span>
+          <a onclick="alert('Mapa de PEVs (funcionalidade expandida)')">Ver Mapa →</a>
+        </div>
+
+        <div class="pev-card">
+          <div class="pev-icon">💻</div>
+          <div class="pev-info">
+            <h4>PEV Bloco TI / Engenharia</h4>
+            <p>Eletrônicos, Cabos e Pilhas • Disponível</p>
+          </div>
+        </div>
+
+        <div class="pev-card">
+          <div class="pev-icon">🥤</div>
+          <div class="pev-info">
+            <h4>PEV Praça de Convivência</h4>
+            <p>Garrafas Plásticas e PET • Disponível</p>
+          </div>
+        </div>
+
+        <div class="pev-card">
+          <div class="pev-icon">📚</div>
+          <div class="pev-info">
+            <h4>PEV Biblioteca Central</h4>
+            <p>Papéis, Cartuchos e Livros • 65% lotado</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VALIDATION SCREEN -->
+    <div class="screen" id="screenValidate">
+      <div class="app-content">
+        <div class="section-title">
+          <span>Validar Novo Descarte</span>
+        </div>
+
+        <div class="camera-box">
+          <div class="camera-overlay-line"></div>
+          <span style="font-size: clamp(2.5rem, 8vw, 3rem);">📷</span>
+          <div class="camera-hint">Aponte para o QR Code na lixeira FAMETRO</div>
+        </div>
+
+        <div class="form-group">
+          <label>Lixeira Identificada</label>
+          <input type="text" value="PEV #ENG-01 (Eletrônicos)" readonly />
+        </div>
+
+        <div class="form-group">
+          <label>Tipo de Material</label>
+          <select id="itemSelected">
+            <option value="50">Cabo / Placa de Computador (+50 pts)</option>
+            <option value="100">Bateria / Componente Pesado (+100 pts)</option>
+            <option value="30">Garrafas Plástico / PET (+30 pts)</option>
+            <option value="40">Papel / Papelão (+40 pts)</option>
+          </select>
+        </div>
+
+        <label style="font-size: clamp(0.8rem, 2vw, 0.9rem); font-weight: 600; display: block; margin-bottom: 6px; margin-top: 16px;">
+          Foto do Material
+        </label>
+        <div class="photo-preview" onclick="simulatePhotoCapture()" id="photoBox">
+          <span>📸 Toque para capturar a foto</span>
+        </div>
+
+        <button class="btn-main-action" style="background: var(--primary-blue);" onclick="confirmDeposit()">
+          Concluir Validação
+        </button>
+
+        <button class="btn-secondary" onclick="goToScreen('screenHome')">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS SCREEN -->
+    <div class="screen" id="screenSuccess">
+      <div class="app-content">
+        <div class="success-wrap">
+          <div class="success-badge">✓</div>
+          <h2>Descarte Validado!</h2>
+          <p>Sua comprovação foi conferida com sucesso.</p>
+
+          <div class="success-points" id="earnedPointsDisplay">+50 pts</div>
+          <span style="font-size: clamp(0.8rem, 2vw, 0.9rem); font-weight: 600; color: var(--accent-green);">Creditados na sua carteira</span>
+
+          <div class="edu-card">
+            🌿 <strong>Impacto Ambiental:</strong> Você evitou a contaminação do lençol freático de Manaus e apoiou a rede do Cedolp/SEMULSP.
+          </div>
+
+          <button class="btn-main-action" onclick="goToScreen('screenRewards')">
+            🎁 Ver Recompensas
+          </button>
+          <button class="btn-secondary" onclick="resetValidation()">Novo Descarte</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY DISCARDS SCREEN -->
+    <div class="screen" id="screenDiscards">
+      <div class="app-content">
+        <div class="section-title">
+          <span>Meus Descartes</span>
+          <span id="discardStats">8 validados</span>
+        </div>
+
+        <div id="discardsList" style="margin-top: 16px;">
+          <!-- Preenchido dinamicamente por JS -->
+        </div>
+
+        <div id="emptyDiscards" class="edu-card" style="text-align: center; margin-top: 40px; display: none;">
+          📭 Você ainda não fez nenhum descarte validado. Comece agora e ganhe EcoPontos!
+        </div>
+      </div>
+    </div>
+
+    <!-- REWARDS SCREEN -->
+    <div class="screen" id="screenRewards">
+      <div class="app-content">
+        <div class="section-title">
+          <span>Trocar Meus EcoPontos</span>
+          <span id="rewardsBalance">340 pts</span>
+        </div>
+
+        <div class="reward-item">
+          <div class="reward-meta">
+            <h4>10h Complementares</h4>
+            <span>300 pts</span>
+          </div>
+          <button class="btn-claim" onclick="claimReward('10h Extensão', 300)">Resgatar</button>
+        </div>
+
+        <div class="reward-item">
+          <div class="reward-meta">
+            <h4>15% Desconto Cantina</h4>
+            <span>150 pts</span>
+          </div>
+          <button class="btn-claim" onclick="claimReward('15% Cantina', 150)">Resgatar</button>
+        </div>
+
+        <div class="reward-item">
+          <div class="reward-meta">
+            <h4>Créditos Impressão</h4>
+            <span>100 pts</span>
+          </div>
+          <button class="btn-claim" onclick="claimReward('Créditos Impressão', 100)">Resgatar</button>
+        </div>
+
+        <div class="reward-item">
+          <div class="reward-meta">
+            <h4>Voucher Cafeteria</h4>
+            <span>80 pts</span>
+          </div>
+          <button class="btn-claim" onclick="claimReward('Voucher Cafeteria', 80)">Resgatar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB BAR -->
+    <nav class="tab-bar">
+      <button class="tab-btn active" id="tabHome" onclick="switchTab('screenHome', 'tabHome')">
+        <span>🏠</span>
+        <span>Início</span>
+      </button>
+      <button class="tab-btn" id="tabDiscards" onclick="switchTab('screenDiscards', 'tabDiscards')">
+        <span>📋</span>
+        <span>Histórico</span>
+      </button>
+      <button class="tab-btn" id="tabRewards" onclick="switchTab('screenRewards', 'tabRewards')">
+        <span>🎁</span>
+        <span>Resgates</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    // === DATABASE (MOCK) ===
+    const MOCK_USERS = {
+      '20231000': {
+        password: 'senha123',
+        nome: 'Gabriel Oliveira',
+        email: 'gabriel.oliveira@fametro.edu.br',
+        points: 340,
+        discards: 8,
+        ranking: '5º',
+        discardHistory: [
+          { date: new Date(Date.now() - 86400000).toISOString(), material: 'Garrafas Plástico / PET', points: 30, location: 'PEV #PRACA-02' },
+          { date: new Date(Date.now() - 172800000).toISOString(), material: 'Papel / Papelão', points: 40, location: 'PEV #BIB-01' },
+          { date: new Date(Date.now() - 259200000).toISOString(), material: 'Cabo / Placa de Computador', points: 50, location: 'PEV #ENG-01' },
+          { date: new Date(Date.now() - 345600000).toISOString(), material: 'Bateria / Componente Pesado', points: 100, location: 'PEV #ENG-01' },
+          { date: new Date(Date.now() - 432000000).toISOString(), material: 'Garrafas Plástico / PET', points: 30, location: 'PEV #PRACA-02' },
+          { date: new Date(Date.now() - 518400000).toISOString(), material: 'Papel / Papelão', points: 40, location: 'PEV #BIB-01' },
+          { date: new Date(Date.now() - 604800000).toISOString(), material: 'Cabo / Placa de Computador', points: 50, location: 'PEV #ENG-01' }
+        ]
+      }
+    };
+
+    let currentUser = null;
+    let hasPhoto = false;
+    let users = { ...MOCK_USERS };
+
+    const MATERIAL_NAMES = {
+      '50': 'Cabo / Placa de Computador',
+      '100': 'Bateria / Componente Pesado',
+      '30': 'Garrafas Plástico / PET',
+      '40': 'Papel / Papelão'
+    };
+
+    // === STORAGE ===
+    function saveToStorage() {
+      localStorage.setItem('residuohub_users', JSON.stringify(users));
+      localStorage.setItem('residuohub_current', currentUser);
+    }
+
+    function loadFromStorage() {
+      const stored = localStorage.getItem('residuohub_users');
+      const current = localStorage.getItem('residuohub_current');
+      if (stored) users = JSON.parse(stored);
+      if (current) currentUser = current;
+    }
+
+    // === AUTH ===
+    function handleLogin(e) {
+      e.preventDefault();
+      const matricula = document.getElementById('loginMatricula').value;
+      const password = document.getElementById('loginPassword').value;
+
+      clearErrors('login');
+
+      if (!users[matricula]) {
+        showError('loginErrorMsg', 'Matrícula não encontrada');
+        return;
+      }
+
+      if (users[matricula].password !== password) {
+        showError('loginPasswordError', 'Senha incorreta');
+        return;
+      }
+
+      currentUser = matricula;
+      saveToStorage();
+      initializeApp();
+    }
+
+    function handleSignup(e) {
+      e.preventDefault();
+      const matricula = document.getElementById('signupMatricula').value;
+      const nome = document.getElementById('signupNome').value;
+      const email = document.getElementById('signupEmail').value;
+      const pass1 = document.getElementById('signupPassword').value;
+      const pass2 = document.getElementById('signupPasswordConfirm').value;
+
+      clearErrors('signup');
+
+      if (users[matricula]) {
+        showError('signupErrorMsg', 'Matrícula já cadastrada');
+        return;
+      }
+
+      if (pass1 !== pass2) {
+        showError('signupErrorMsg', 'Senhas não conferem');
+        return;
+      }
+
+      if (pass1.length < 6) {
+        showError('signupErrorMsg', 'Senha deve ter no mínimo 6 caracteres');
+        return;
+      }
+
+      users[matricula] = {
+        password: pass1,
+        nome,
+        email,
+        points: 0,
+        discards: 0,
+        ranking: '999º',
+        discardHistory: []
+      };
+
+      saveToStorage();
+      currentUser = matricula;
+      initializeApp();
+    }
+
+    function handleRecover(e) {
+      e.preventDefault();
+      const email = document.getElementById('recoverEmail').value;
+
+      clearErrors('recover');
+
+      const user = Object.values(users).find(u => u.email === email);
+      if (!user) {
+        showError('recoverErrorMsg', 'Email não encontrado');
+        return;
+      }
+
+      showSuccess('recoverSuccessMsg', `✓ Link enviado para ${email}`);
+      setTimeout(() => goToScreen('screenLogin'), 2000);
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      localStorage.clear();
+      goToScreen('screenLogin');
+      document.getElementById('appContainer').classList.add('hidden');
+    }
+
+    // === APP ===
+    function initializeApp() {
+      const user = users[currentUser];
+      document.getElementById('userPill').textContent = `${user.nome.split(' ')[0]} • ADS`;
+      document.getElementById('userPoints').innerHTML = `${user.points} <span>pts</span>`;
+      document.getElementById('userRanking').textContent = `🏆 ${user.ranking}`;
+      document.getElementById('discardCount').textContent = `${user.discards} descartes validados`;
+      document.getElementById('rewardsBalance').textContent = `${user.points} pts`;
+      
+      // Renderizar histórico inicialmente
+      renderDiscardHistory();
+
+      document.getElementById('appContainer').classList.remove('hidden');
+      document.getElementById('screenLogin').classList.remove('active');
+      goToScreen('screenHome');
+    }
+
+    function simulatePhotoCapture() {
+      hasPhoto = true;
+      const box = document.getElementById('photoBox');
+      box.classList.add('captured');
+      box.innerHTML = '✓ <strong>Foto capturada!</strong>';
+    }
+
+    function confirmDeposit() {
+      if (!hasPhoto) {
+        alert('Capture a foto do resíduo para validar');
+        return;
+      }
+
+      const pointsGained = parseInt(document.getElementById('itemSelected').value);
+      const materialType = document.getElementById('itemSelected').value;
+      const user = users[currentUser];
+      
+      user.points += pointsGained;
+      user.discards += 1;
+
+      // Guardar no histórico
+      if (!user.discardHistory) {
+        user.discardHistory = [];
+      }
+
+      const now = new Date();
+      user.discardHistory.push({
+        date: now.toISOString(),
+        material: MATERIAL_NAMES[materialType],
+        points: pointsGained,
+        location: 'PEV #ENG-01 (Eletrônicos)'
+      });
+
+      saveToStorage();
+
+      document.getElementById('earnedPointsDisplay').textContent = `+${pointsGained} pts`;
+      document.getElementById('userPoints').innerHTML = `${user.points} <span>pts</span>`;
+      document.getElementById('rewardsBalance').textContent = `${user.points} pts`;
+
+      hasPhoto = false;
+      goToScreen('screenSuccess');
+    }
+
+    function resetValidation() {
+      hasPhoto = false;
+      const box = document.getElementById('photoBox');
+      box.classList.remove('captured');
+      box.innerHTML = '<span>📸 Toque para capturar a foto</span>';
+      document.getElementById('itemSelected').value = '50';
+      goToScreen('screenHome');
+    }
+
+    function claimReward(name, cost) {
+      const user = users[currentUser];
+      if (user.points < cost) {
+        alert('Saldo insuficiente de EcoPontos');
+        return;
+      }
+
+      user.points -= cost;
+      saveToStorage();
+      document.getElementById('userPoints').innerHTML = `${user.points} <span>pts</span>`;
+      document.getElementById('rewardsBalance').textContent = `${user.points} pts`;
+      alert(`✓ Voucher #FAM-${Math.floor(1000 + Math.random() * 9000)} gerado para: ${name}`);
+    }
+
+    function goToScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    function switchTab(screenId, tabId) {
+      goToScreen(screenId);
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      
+      // Renderizar histórico se for a tela de descartes
+      if (screenId === 'screenDiscards') {
+        renderDiscardHistory();
+      }
+    }
+
+    function renderDiscardHistory() {
+      const user = users[currentUser];
+      const discardsList = document.getElementById('discardsList');
+      const emptyDiscards = document.getElementById('emptyDiscards');
+      const discardStats = document.getElementById('discardStats');
+
+      discardStats.textContent = `${user.discards} validados`;
+
+      if (!user.discardHistory || user.discardHistory.length === 0) {
+        discardsList.innerHTML = '';
+        emptyDiscards.style.display = 'block';
+        return;
+      }
+
+      emptyDiscards.style.display = 'none';
+      
+      // Renderizar em ordem reversa (mais recentes primeiro)
+      discardsList.innerHTML = user.discardHistory
+        .slice()
+        .reverse()
+        .map((discard, idx) => {
+          const date = new Date(discard.date);
+          const formatted = date.toLocaleDateString('pt-BR') + ' às ' + date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          
+          return `
+            <div class="discard-item">
+              <div class="discard-info">
+                <h4>${discard.material}</h4>
+                <p>📍 ${discard.location}</p>
+                <div class="discard-date">${formatted}</div>
+              </div>
+              <div class="discard-points">
+                +${discard.points}<small>pts</small>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+    }
+
+    function clearErrors(prefix) {
+      document.querySelectorAll(`[id^="${prefix}"]`).forEach(el => {
+        if (el.classList.contains('error-msg')) el.classList.remove('show');
+      });
+    }
+
+    function showError(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+
+    function showSuccess(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+
+    // === INIT ===
+    loadFromStorage();
+    
+    // Garantir que o usuário mock tem histórico
+    if (users['20231000'] && !users['20231000'].discardHistory) {
+      users['20231000'].discardHistory = [
+        { date: new Date(Date.now() - 86400000).toISOString(), material: 'Garrafas Plástico / PET', points: 30, location: 'PEV #PRACA-02' },
+        { date: new Date(Date.now() - 172800000).toISOString(), material: 'Papel / Papelão', points: 40, location: 'PEV #BIB-01' },
+        { date: new Date(Date.now() - 259200000).toISOString(), material: 'Cabo / Placa de Computador', points: 50, location: 'PEV #ENG-01' },
+        { date: new Date(Date.now() - 345600000).toISOString(), material: 'Bateria / Componente Pesado', points: 100, location: 'PEV #ENG-01' },
+        { date: new Date(Date.now() - 432000000).toISOString(), material: 'Garrafas Plástico / PET', points: 30, location: 'PEV #PRACA-02' },
+        { date: new Date(Date.now() - 518400000).toISOString(), material: 'Papel / Papelão', points: 40, location: 'PEV #BIB-01' },
+        { date: new Date(Date.now() - 604800000).toISOString(), material: 'Cabo / Placa de Computador', points: 50, location: 'PEV #ENG-01' }
+      ];
+      saveToStorage();
+    }
+    
+    if (currentUser) {
+      initializeApp();
+    }
+  </script>
+</body>
+</html>
