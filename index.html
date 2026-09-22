@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   
   <style>
     :root {
@@ -30,6 +31,21 @@
       padding: 0;
       font-family: 'Inter', sans-serif;
       -webkit-tap-highlight-color: transparent;
+    }
+
+    .material-icons {
+      font-family: 'Material Icons';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      display: inline-flex;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      vertical-align: middle;
     }
 
     html, body {
@@ -766,7 +782,7 @@
   <div class="screen active" id="screenLogin">
     <div class="auth-container">
       <div class="auth-box">
-        <h2>♻️ ResíduoHub</h2>
+        <h2><span class="material-icons" style="font-size: 1.5rem; margin-right: 6px;">eco</span>ResíduoHub</h2>
         <p>Gestão de Resíduos Sustentável</p>
 
         <div class="success-message" id="loginSuccessMsg"></div>
@@ -873,7 +889,7 @@
   <!-- APP AUTHENTICATED -->
   <div class="app-container hidden" id="appContainer">
     <header class="app-header">
-      <h1>♻️ ResíduoHub</h1>
+      <h1><span class="material-icons" style="font-size: 1.25rem; margin-right: 8px;">eco</span>ResíduoHub</h1>
       <div style="display: flex; align-items: center; gap: 12px;">
         <span class="user-pill" id="userPill"></span>
         <button class="btn-logout" onclick="handleLogout()">Sair</button>
@@ -886,7 +902,7 @@
         <div class="balance-card">
           <div class="balance-header">
             <span>Meus EcoPontos</span>
-            <span id="userRanking">🏆 5º Lugar</span>
+            <span id="userRanking"><span class="material-icons" style="font-size: 1rem; vertical-align: middle; margin-right: 4px;">emoji_events</span>5º Lugar</span>
           </div>
           <div class="balance-number" id="userPoints">340 <span>pts</span></div>
           <div class="balance-footer">
@@ -896,7 +912,7 @@
         </div>
 
         <button class="btn-main-action" onclick="goToScreen('screenValidate')">
-          📸 Descartar e Ganhar Pontos
+          <span class="material-icons">photo_camera</span> Descartar e Ganhar Pontos
         </button>
 
         <div class="section-title">
@@ -939,7 +955,7 @@
 
         <div class="camera-box">
           <div class="camera-overlay-line"></div>
-          <span style="font-size: clamp(2.5rem, 8vw, 3rem);">📷</span>
+          <span class="material-icons" style="font-size: 3rem; color: #9CA3AF;">photo_camera</span>
           <div class="camera-hint">Aponte para o QR Code na lixeira FAMETRO</div>
         </div>
 
@@ -962,7 +978,8 @@
           Foto do Material
         </label>
         <div class="photo-preview" onclick="simulatePhotoCapture()" id="photoBox">
-          <span>📸 Toque para capturar a foto</span>
+          <span class="material-icons" style="margin-right: 6px;">photo_camera</span>
+          <span>Toque para capturar a foto</span>
         </div>
 
         <button class="btn-main-action" style="background: var(--primary-blue);" onclick="confirmDeposit()">
@@ -985,11 +1002,11 @@
           <span style="font-size: clamp(0.8rem, 2vw, 0.9rem); font-weight: 600; color: var(--accent-green);">Creditados na sua carteira</span>
 
           <div class="edu-card">
-            🌿 <strong>Impacto Ambiental:</strong> Você evitou a contaminação do lençol freático de Manaus e apoiou a rede do Cedolp/SEMULSP.
+            <span class="material-icons" style="font-size: 20px; vertical-align: middle; margin-right: 6px;">leaf</span><strong>Impacto Ambiental:</strong> Você evitou a contaminação do lençol freático de Manaus e apoiou a rede do Cedolp/SEMULSP.
           </div>
 
           <button class="btn-main-action" onclick="goToScreen('screenRewards')">
-            🎁 Ver Recompensas
+            <span class="material-icons">card_giftcard</span> Ver Recompensas
           </button>
           <button class="btn-secondary" onclick="resetValidation()">Novo Descarte</button>
         </div>
@@ -1009,7 +1026,8 @@
         </div>
 
         <div id="emptyDiscards" class="edu-card" style="text-align: center; margin-top: 40px; display: none;">
-          📭 Você ainda não fez nenhum descarte validado. Comece agora e ganhe EcoPontos!
+          <span class="material-icons" style="font-size: 2rem; display: block; margin-bottom: 8px; color: var(--text-muted);">mail</span>
+          Você ainda não fez nenhum descarte validado. Comece agora e ganhe EcoPontos!
         </div>
       </div>
     </div>
@@ -1059,15 +1077,15 @@
     <!-- TAB BAR -->
     <nav class="tab-bar">
       <button class="tab-btn active" id="tabHome" onclick="switchTab('screenHome', 'tabHome')">
-        <span>🏠</span>
+        <span class="material-icons">home</span>
         <span>Início</span>
       </button>
       <button class="tab-btn" id="tabDiscards" onclick="switchTab('screenDiscards', 'tabDiscards')">
-        <span>📋</span>
+        <span class="material-icons">history</span>
         <span>Histórico</span>
       </button>
       <button class="tab-btn" id="tabRewards" onclick="switchTab('screenRewards', 'tabRewards')">
-        <span>🎁</span>
+        <span class="material-icons">card_giftcard</span>
         <span>Resgates</span>
       </button>
     </nav>
@@ -1078,11 +1096,11 @@
     const MOCK_USERS = {
       '20231000': {
         password: 'senha123',
-        nome: 'Gabriel Oliveira',
+        name: 'Gabriel Oliveira',
         email: 'gabriel.oliveira@fametro.edu.br',
         points: 340,
         discards: 8,
-        ranking: '5º',
+        ranking: '1º',
         discardHistory: [
           { date: new Date(Date.now() - 86400000).toISOString(), material: 'Garrafas Plástico / PET', points: 30, location: 'PEV #PRACA-02' },
           { date: new Date(Date.now() - 172800000).toISOString(), material: 'Papel / Papelão', points: 40, location: 'PEV #BIB-01' },
@@ -1092,6 +1110,42 @@
           { date: new Date(Date.now() - 518400000).toISOString(), material: 'Papel / Papelão', points: 40, location: 'PEV #BIB-01' },
           { date: new Date(Date.now() - 604800000).toISOString(), material: 'Cabo / Placa de Computador', points: 50, location: 'PEV #ENG-01' }
         ]
+      },
+      '20231001': {
+        password: 'senha123',
+        name: 'Luana Rafaela',
+        email: 'luana.rafaela@fametro.edu.br',
+        points: 285,
+        discards: 7,
+        ranking: '2º',
+        discardHistory: []
+      },
+      '20231002': {
+        password: 'senha123',
+        name: 'Walter Barbosa',
+        email: 'walter.barbosa@fametro.edu.br',
+        points: 240,
+        discards: 6,
+        ranking: '3º',
+        discardHistory: []
+      },
+      '20231003': {
+        password: 'senha123',
+        name: 'Gabriel Magalhães',
+        email: 'gabriel.magalhaes@fametro.edu.br',
+        points: 195,
+        discards: 5,
+        ranking: '4º',
+        discardHistory: []
+      },
+      '20231004': {
+        password: 'senha123',
+        name: 'Gabriel Henrique',
+        email: 'gabriel.henrique@fametro.edu.br',
+        points: 160,
+        discards: 4,
+        ranking: '5º',
+        discardHistory: []
       }
     };
 
@@ -1113,22 +1167,71 @@
     }
 
     function loadFromStorage() {
-      const stored = localStorage.getItem('residuohub_users');
-      const current = localStorage.getItem('residuohub_current');
-      if (stored) users = JSON.parse(stored);
-      if (current) currentUser = current;
+      try {
+        const stored = localStorage.getItem('residuohub_users');
+        const current = localStorage.getItem('residuohub_current');
+        
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          
+          // Validar se tem dados inválidos
+          let hasInvalidData = false;
+          Object.keys(parsed).forEach(key => {
+            const user = parsed[key];
+            
+            // Migrar dados velhos: campo 'nome' → 'name'
+            if (user.nome && !user.name) {
+              user.name = user.nome;
+              delete user.nome;
+              hasInvalidData = true;
+            }
+            
+            // Se não tem name nem nome, está corrompido
+            if (!user.name && !user.nome) {
+              hasInvalidData = true;
+              console.warn('Invalid user data for:', key, user);
+            }
+          });
+          
+          if (hasInvalidData) {
+            console.log('Found invalid data, will reset to MOCK_USERS');
+            users = JSON.parse(JSON.stringify(MOCK_USERS));
+            localStorage.setItem('residuohub_users', JSON.stringify(users));
+          } else {
+            users = parsed;
+          }
+        } else {
+          // Se não tem storage, sempre usa MOCK_USERS
+          users = JSON.parse(JSON.stringify(MOCK_USERS));
+        }
+        
+        if (current) currentUser = current;
+        
+        console.log('Loaded users:', Object.keys(users), users);
+      } catch (err) {
+        console.error('Error loading storage, resetting to MOCK_USERS:', err);
+        users = JSON.parse(JSON.stringify(MOCK_USERS));
+        localStorage.setItem('residuohub_users', JSON.stringify(users));
+      }
     }
 
     // === AUTH ===
     function handleLogin(e) {
       e.preventDefault();
-      const matricula = document.getElementById('loginMatricula').value;
-      const password = document.getElementById('loginPassword').value;
+      const matricula = document.getElementById('loginMatricula').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+
+      console.log('Login attempt:', { matricula, password, availableUsers: Object.keys(users) });
 
       clearErrors('login');
 
+      if (!matricula || !password) {
+        showError('loginErrorMsg', 'Preencha todos os campos');
+        return;
+      }
+
       if (!users[matricula]) {
-        showError('loginErrorMsg', 'Matrícula não encontrada');
+        showError('loginErrorMsg', `Matrícula ${matricula} não encontrada. Disponíveis: ${Object.keys(users).join(', ')}`);
         return;
       }
 
@@ -1139,7 +1242,13 @@
 
       currentUser = matricula;
       saveToStorage();
-      initializeApp();
+      
+      try {
+        initializeApp();
+      } catch (err) {
+        console.error('Error in initializeApp:', err);
+        showError('loginErrorMsg', 'Erro ao inicializar app: ' + err.message);
+      }
     }
 
     function handleSignup(e) {
@@ -1208,11 +1317,25 @@
     // === APP ===
     function initializeApp() {
       const user = users[currentUser];
-      document.getElementById('userPill').textContent = `${user.nome.split(' ')[0]} • ADS`;
-      document.getElementById('userPoints').innerHTML = `${user.points} <span>pts</span>`;
-      document.getElementById('userRanking').textContent = `🏆 ${user.ranking}`;
-      document.getElementById('discardCount').textContent = `${user.discards} descartes validados`;
-      document.getElementById('rewardsBalance').textContent = `${user.points} pts`;
+      
+      if (!user) {
+        console.error('User not found:', currentUser);
+        return;
+      }
+      
+      // Garantir que user tem os campos necessários
+      const firstName = (user.name || user.nome || 'Usuário').split(' ')[0];
+      const userPoints = user.points || 0;
+      const userRanking = user.ranking || '999º';
+      const userDiscards = user.discards || 0;
+      
+      console.log('Initializing app for:', { currentUser, firstName, userPoints, userRanking, userDiscards });
+      
+      document.getElementById('userPill').textContent = `${firstName} • ADS`;
+      document.getElementById('userPoints').innerHTML = `${userPoints} <span>pts</span>`;
+      document.getElementById('userRanking').textContent = `📍 ${userRanking}`;
+      document.getElementById('discardCount').textContent = `${userDiscards} descartes validados`;
+      document.getElementById('rewardsBalance').textContent = `${userPoints} pts`;
       
       // Renderizar histórico inicialmente
       renderDiscardHistory();
@@ -1269,7 +1392,7 @@
       hasPhoto = false;
       const box = document.getElementById('photoBox');
       box.classList.remove('captured');
-      box.innerHTML = '<span>📸 Toque para capturar a foto</span>';
+      box.innerHTML = '<span class="material-icons" style="margin-right: 6px;">photo_camera</span><span>Toque para capturar a foto</span>';
       document.getElementById('itemSelected').value = '50';
       goToScreen('screenHome');
     }
@@ -1363,10 +1486,21 @@
     }
 
     // === INIT ===
+    // Inicializar users com MOCK_USERS primeiro
+    users = JSON.parse(JSON.stringify(MOCK_USERS));
+    
+    // Depois tentar carregar do localStorage
     loadFromStorage();
     
-    // Garantir que o usuário mock tem histórico
-    if (users['20231000'] && !users['20231000'].discardHistory) {
+    // Garantir que todos os usuários têm discardHistory
+    Object.keys(users).forEach(matricula => {
+      if (!users[matricula].discardHistory) {
+        users[matricula].discardHistory = [];
+      }
+    });
+    
+    // Garantir que o usuário mock 20231000 tem histórico completo
+    if (users['20231000'].discardHistory.length === 0) {
       users['20231000'].discardHistory = [
         { date: new Date(Date.now() - 86400000).toISOString(), material: 'Garrafas Plástico / PET', points: 30, location: 'PEV #PRACA-02' },
         { date: new Date(Date.now() - 172800000).toISOString(), material: 'Papel / Papelão', points: 40, location: 'PEV #BIB-01' },
@@ -1378,6 +1512,8 @@
       ];
       saveToStorage();
     }
+    
+    console.log('App initialized. Available users:', Object.keys(users));
     
     if (currentUser) {
       initializeApp();
